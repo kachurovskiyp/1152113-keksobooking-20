@@ -7,26 +7,23 @@ var randomInt = function (min, max) {
 
 var getRandom = function (array, flag) {
   var maxNumber = array.length - 1;
-  if (flag === 'list') {
-    var list = [];
-    for (var j = randomInt(0, maxNumber); j < maxNumber; j++) {
-      list.push(array[randomInt(0, maxNumber)]);
-    }
-    return list;
-  }
+  switch (flag) {
+    case 'list':
+      var list = [];
+      for (var j = randomInt(0, maxNumber); j < maxNumber; j++) {
+        list.push(array[randomInt(0, maxNumber)]);
+      }
+      return list;
 
-  if (flag === 'string') {
-    var str = '';
-    for (var i = randomInt(0, maxNumber); i < maxNumber; i++) {
-      str += array[randomInt(0, maxNumber)] + ' ';
-    }
+    case 'string':
+      var str = '';
+      for (var i = randomInt(0, maxNumber); i < maxNumber; i++) {
+        str += array[randomInt(0, maxNumber)] + ' ';
+      }
+      return str;
 
-    return str;
-
-  } else {
-
-    return null;
-
+    default:
+      return null;
   }
 };
 
@@ -42,16 +39,16 @@ var getNearestAds = function (adsNumber) {
   for (var i = 1; i <= adsNumber; i++) {
     var ad = {};
 
-    ad['author'] = {
+    ad.author = {
       avatar: 'img/avatars/user0' + i + '.png'
     };
 
-    ad['location'] = {
+    ad.location = {
       x: randomInt(0, 750),
       y: randomInt(130, 630)
     };
 
-    ad['offer'] = {
+    ad.offer = {
       title: TITLES[i],
       address: '' + ad.location.x + ', ' + ad.location.y,
       price: randomInt(100, 1500),
@@ -63,12 +60,10 @@ var getNearestAds = function (adsNumber) {
       description: getRandom(DESCRIPTIONS_LIST, 'string'),
       photos: getRandom(FOTOS, 'list')
     };
-
     ad.offer.guests = 2 * ad.offer.rooms;
 
     adsArray.push(ad);
   }
-
   return adsArray;
 };
 
@@ -78,15 +73,27 @@ var renderPins = function (ads) {
   for (var i = 0; i < ads.length; i++) {
     var pin = pinTemplate.cloneNode(true);
 
-    pin.style.left = ads[i].location.x + 'px';
-    pin.style.top = ads[i].location.y + 'px';
-
     pin.querySelector('img').src = ads[i].author.avatar;
     pin.querySelector('img').alt = ads[i].offer.title;
 
     fragment.appendChild(pin);
   }
   return fragment;
+};
+
+var pinsRaplace = function (pins) {
+  for (var i = 0; i < pins.length - 1; i++) {
+    if (!pins[i].classList.contains('map__pin--main')) {
+      var pinHeight = window.getComputedStyle(pins[i]).height;
+      var pinWidth = window.getComputedStyle(pins[i]).width;
+
+      pinWidth = pinWidth.replace('px', '') * 1;
+      pinHeight = pinHeight.replace('px', '') * 1;
+
+      pins[i].style.left = ads[i].location.x - (pinWidth / 2) + 'px';
+      pins[i].style.top = ads[i].location.y - pinHeight + 'px';
+    }
+  }
 };
 
 var map = document.querySelector('.map');
@@ -102,3 +109,7 @@ var pinElements = renderPins(ads);
 
 var mapPins = document.querySelector('.map__pins');
 mapPins.appendChild(pinElements);
+
+var pins = document.querySelectorAll('.map__pin');
+pinsRaplace(pins);
+
