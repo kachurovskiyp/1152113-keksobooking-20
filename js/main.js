@@ -1,25 +1,53 @@
 'use strict';
 
 var randomInt = function (min, max) {
-  var rand = min + Math.random() * (max - min);
+  var rand = min + Math.random() * (max - min + 1);
   return Math.floor(rand);
 };
 
 var getRandom = function (array, flag) {
   var maxNumber = array.length - 1;
+  var loopStart = randomInt(1, maxNumber);
+
   switch (flag) {
     case 'list':
       var list = [];
-      for (var j = randomInt(0, maxNumber); j < maxNumber; j++) {
-        list.push(array[randomInt(0, maxNumber)]);
+
+      for (var j = loopStart; j < maxNumber; j++) {
+        var random = randomInt(0, maxNumber);
+        var isUnique = true;
+
+        for (var i = 0; i < list.length; i++) {
+          if (list[i] === array[random]) {
+            isUnique = false;
+            j++;
+          }
+        }
+
+        if (isUnique) {
+          list.push(array[random]);
+        }
       }
       return list;
 
     case 'string':
       var str = '';
-      for (var i = randomInt(0, maxNumber); i < maxNumber; i++) {
-        str += array[randomInt(0, maxNumber)] + ' ';
+
+      for (var k = loopStart; k < maxNumber; k++) {
+        var randomStr = randomInt(0, maxNumber);
+        var isUniqueStr = true;
+
+
+        if (str.indexOf(array[randomStr]) !== -1) {
+          isUniqueStr = false;
+          k++;
+        }
+
+        if (isUniqueStr) {
+          str += array[randomStr] + ' ';
+        }
       }
+
       return str;
 
     default:
@@ -34,7 +62,7 @@ var getNearestAds = function (adsNumber) {
   var CHECK_TIMES = ['12:00', '13:00', '14:00'];
   var FEATURES_LIST = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
   var DESCRIPTIONS_LIST = ['Отель «338 на Мира» расположен в Санкт-Петербурге', 'в 2,6 км от стадиона «Петровский»', 'К услугам гостей общий лаундж, гипоаллергенные номера', 'К услугам гостей этого 3-звездочного отеля общая кухня', 'В отеле имеются семейные номера', 'Все номера отеля оснащены письменным столом и телевизором с плоским экраном', 'В числе удобств номеров шкаф и чайник', 'Мы говорим на вашем языке!'];
-  var FOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+  var FOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg', 'https://i.pinimg.com/originals/56/a3/f7/56a3f730cd560be2a3ac4817fb5e3df1.jpg', 'https://www.gabinohome.com/slir/w300-h230-c300:230-q40-p1/assets/clients/c-377998/a-182118/773257_5edccbe58bdfb.jpg'];
 
   for (var i = 1; i <= adsNumber; i++) {
     var ad = {};
@@ -113,7 +141,7 @@ mapPins.appendChild(pinElements);
 var pins = document.querySelectorAll('.map__pin');
 pinsRaplace(pins);
 
-/* Отрисовка карточки */
+/* --- Отрисовка карточки --- */
 
 var cardTemplate = document.querySelector('#card');
 var card = cardTemplate.cloneNode(true);
@@ -143,48 +171,54 @@ switch (ads[0].offer.type) {
 card.content.querySelector('.popup__text--capacity').textContent = ads[0].offer.rooms + ' комнаты для ' + ads[0].offer.guests + ' гостей';
 card.content.querySelector('.popup__text--time').textContent = 'Заезд после ' + ads[0].offer.checkin + ', выезд до ' + ads[0].offer.checkout;
 
+/* --- отрисовки списка удобств --- */
+
 var popupFeaturesList = card.content.querySelector('.popup__features');
-while (popupFeaturesList.firstChild) {
-  popupFeaturesList.removeChild(popupFeaturesList.firstChild);
-}
-
-var fragmentList = document.createDocumentFragment();
-
-for (var i = 0; i < ads[0].offer.feature.length; i++) {
-  var listItem;
-  listItem = document.createElement('li');
-  listItem.classList.add('popup__feature');
-
-  switch (ads[0].offer.feature[i]) {
-    case 'wifi':
-      listItem.classList.add('popup__feature--wifi');
-      break;
-
-    case 'dishwasher':
-      listItem.classList.add('popup__feature--dishwasher');
-      break;
-
-    case 'parking':
-      listItem.classList.add('popup__feature--parking');
-      break;
-
-    case 'washer':
-      listItem.classList.add('popup__feature--washer');
-      break;
-
-    case 'elevator':
-      listItem.classList.add('popup__feature--elevator');
-      break;
-
-    case 'conditioner':
-      listItem.classList.add('popup__feature--conditioner');
-      break;
+if (ads[0].offer.feature.length > 0) {
+  while (popupFeaturesList.firstChild) {
+    popupFeaturesList.removeChild(popupFeaturesList.firstChild);
   }
 
-  fragmentList.appendChild(listItem);
-}
+  var fragmentList = document.createDocumentFragment();
 
-popupFeaturesList.appendChild(fragmentList);
+  for (var i = 0; i < ads[0].offer.feature.length; i++) {
+    var listItem;
+    listItem = document.createElement('li');
+    listItem.classList.add('popup__feature');
+
+    switch (ads[0].offer.feature[i]) {
+      case 'wifi':
+        listItem.classList.add('popup__feature--wifi');
+        break;
+
+      case 'dishwasher':
+        listItem.classList.add('popup__feature--dishwasher');
+        break;
+
+      case 'parking':
+        listItem.classList.add('popup__feature--parking');
+        break;
+
+      case 'washer':
+        listItem.classList.add('popup__feature--washer');
+        break;
+
+      case 'elevator':
+        listItem.classList.add('popup__feature--elevator');
+        break;
+
+      case 'conditioner':
+        listItem.classList.add('popup__feature--conditioner');
+        break;
+    }
+
+    fragmentList.appendChild(listItem);
+  }
+
+  popupFeaturesList.appendChild(fragmentList);
+} else {
+  popupFeaturesList.remove();
+}
 
 card.content.querySelector('.popup__description').textContent = ads[0].offer.description;
 
@@ -193,17 +227,20 @@ map = document.querySelector('.map');
 map.insertBefore(card, document.querySelector('.map__filters-container'));
 
 var popupFotos = document.querySelector('.popup__photos');
-popupFotos.querySelector('img').src = ads[0].offer.photos[0];
+if (ads[0].offer.photos[0]) {
+  popupFotos.querySelector('img').src = ads[0].offer.photos[0];
 
-if (ads[0].offer.photos.length !== 1) {
-  var photosFragment = document.createDocumentFragment();
-  for (var i = 1; i < ads[0].offer.photos.length; i++) {
-    var img = popupFotos.querySelector('img').cloneNode(true);
-    img.src = ads[0].offer.photos[i];
-    photosFragment.appendChild(img);
+  if (ads[0].offer.photos.length !== 1) {
+    var photosFragment = document.createDocumentFragment();
+    for (var l = 1; l < ads[0].offer.photos.length; l++) {
+      var img = popupFotos.querySelector('img').cloneNode(true);
+      img.src = ads[0].offer.photos[l];
+      photosFragment.appendChild(img);
+    }
+    popupFotos.appendChild(photosFragment);
   }
-  popupFotos.appendChild(photosFragment);
+} else {
+  popupFotos.remove();
 }
-
 var popupAvatar = document.querySelector('.popup__avatar');
 popupAvatar.src = ads[0].author.avatar;
