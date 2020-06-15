@@ -55,95 +55,215 @@ var getRandom = function (array, flag) {
   }
 };
 
-var getNearestAds = function (adsNumber) {
-  var adsArray = [];
-  var TITLES = ['Отель Демут', 'Nevsky sky', 'Александр Hotel', 'Гостевой дом «Пушкинский»', 'Мини-Отель Дом Романовых', 'Арт Деко Невский', 'Отель Гранд Каньон', 'Мини-отель на Шмидта'];
-  var TIPES = ['palace', 'flat', 'house', 'bungalo'];
-  var CHECK_TIMES = ['12:00', '13:00', '14:00'];
-  var FEATURES_LIST = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-  var DESCRIPTIONS_LIST = ['Отель «338 на Мира» расположен в Санкт-Петербурге', 'в 2,6 км от стадиона «Петровский»', 'К услугам гостей общий лаундж, гипоаллергенные номера', 'К услугам гостей этого 3-звездочного отеля общая кухня', 'В отеле имеются семейные номера', 'Все номера отеля оснащены письменным столом и телевизором с плоским экраном', 'В числе удобств номеров шкаф и чайник', 'Мы говорим на вашем языке!'];
-  var FOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg', 'https://i.pinimg.com/originals/56/a3/f7/56a3f730cd560be2a3ac4817fb5e3df1.jpg', 'https://www.gabinohome.com/slir/w300-h230-c300:230-q40-p1/assets/clients/c-377998/a-182118/773257_5edccbe58bdfb.jpg'];
-
-  for (var i = 1; i <= adsNumber; i++) {
-    var ad = {};
-
-    ad.author = {
-      avatar: 'img/avatars/user0' + i + '.png'
-    };
-
-    ad.location = {
-      x: randomInt(0, 750),
-      y: randomInt(130, 630)
-    };
-
-    ad.offer = {
-      title: TITLES[i],
-      address: '' + ad.location.x + ', ' + ad.location.y,
-      price: randomInt(100, 1500),
-      type: TIPES[randomInt(0, 3)],
-      rooms: randomInt(1, 4),
-      checkin: CHECK_TIMES[randomInt(0, 2)],
-      checkout: CHECK_TIMES[randomInt(0, 2)],
-      feature: getRandom(FEATURES_LIST, 'list'),
-      description: getRandom(DESCRIPTIONS_LIST, 'string'),
-      photos: getRandom(FOTOS, 'list')
-    };
-    ad.offer.guests = 2 * ad.offer.rooms;
-
-    adsArray.push(ad);
-  }
-  return adsArray;
+var removePX = function (element) {
+  return element.replace('px', '') * 1;
 };
 
-var renderPins = function (ads) {
-  var fragment = document.createDocumentFragment();
+var activeAll = function () {
+  var map = document.querySelector('.map');
+  var mapPins = document.querySelector('.map__pins');
 
-  for (var i = 0; i < ads.length; i++) {
-    var pin = pinTemplate.cloneNode(true);
+  var getNearestAds = function (adsNumber) {
+    var adsArray = [];
+    var TITLES = ['Отель Демут', 'Nevsky sky', 'Александр Hotel', 'Гостевой дом «Пушкинский»', 'Мини-Отель Дом Романовых', 'Арт Деко Невский', 'Отель Гранд Каньон', 'Мини-отель на Шмидта'];
+    var TIPES = ['palace', 'flat', 'house', 'bungalo'];
+    var CHECK_TIMES = ['12:00', '13:00', '14:00'];
+    var FEATURES_LIST = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
+    var DESCRIPTIONS_LIST = ['Отель «338 на Мира» расположен в Санкт-Петербурге', 'в 2,6 км от стадиона «Петровский»', 'К услугам гостей общий лаундж, гипоаллергенные номера', 'К услугам гостей этого 3-звездочного отеля общая кухня', 'В отеле имеются семейные номера', 'Все номера отеля оснащены письменным столом и телевизором с плоским экраном', 'В числе удобств номеров шкаф и чайник', 'Мы говорим на вашем языке!'];
+    var FOTOS = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg', 'https://i.pinimg.com/originals/56/a3/f7/56a3f730cd560be2a3ac4817fb5e3df1.jpg', 'https://www.gabinohome.com/slir/w300-h230-c300:230-q40-p1/assets/clients/c-377998/a-182118/773257_5edccbe58bdfb.jpg'];
 
-    pin.querySelector('img').src = ads[i].author.avatar;
-    pin.querySelector('img').alt = ads[i].offer.title;
+    for (var i = 1; i <= adsNumber; i++) {
+      var ad = {};
 
-    fragment.appendChild(pin);
+      ad.author = {
+        avatar: 'img/avatars/user0' + i + '.png'
+      };
+
+      ad.location = {
+        x: randomInt(0, 750),
+        y: randomInt(130, 630)
+      };
+
+      ad.offer = {
+        title: TITLES[i],
+        address: '' + ad.location.x + ', ' + ad.location.y,
+        price: randomInt(100, 1500),
+        type: TIPES[randomInt(0, 3)],
+        rooms: randomInt(1, 4),
+        checkin: CHECK_TIMES[randomInt(0, 2)],
+        checkout: CHECK_TIMES[randomInt(0, 2)],
+        feature: getRandom(FEATURES_LIST, 'list'),
+        description: getRandom(DESCRIPTIONS_LIST, 'string'),
+        photos: getRandom(FOTOS, 'list')
+      };
+      ad.offer.guests = 2 * ad.offer.rooms;
+
+      adsArray.push(ad);
+    }
+    return adsArray;
+  };
+
+  var renderPins = function (ads) {
+    var fragment = document.createDocumentFragment();
+
+    for (var i = 0; i < ads.length; i++) {
+      var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+      var pin = pinTemplate.cloneNode(true);
+
+      pin.querySelector('img').src = ads[i].author.avatar;
+      pin.querySelector('img').alt = ads[i].offer.title;
+
+      fragment.appendChild(pin);
+    }
+    return fragment;
+  };
+
+  var ads = getNearestAds(8);
+  var pinElements = renderPins(ads);
+
+  var pinsRaplace = function () {
+    var pinsRendered = document.querySelectorAll('.map__pin');
+    for (var i = 0; i < pinsRendered.length - 1; i++) {
+      if (!pinsRendered[i].classList.contains('map__pin--main')) {
+        var pinHeight = removePX(window.getComputedStyle(pinsRendered[i]).height);
+        var pinWidth = removePX(window.getComputedStyle(pinsRendered[i]).width);
+
+        pinsRendered[i].style.left = ads[i].location.x - (pinWidth / 2) + 'px';
+        pinsRendered[i].style.top = ads[i].location.y - pinHeight + 'px';
+      }
+    }
+  };
+
+  var undisabelForm = function () {
+    var addForm = document.querySelector('.ad-form');
+    var fieldsets = document.querySelectorAll('fieldset');
+
+    for (var i = 0; i < fieldsets.length; i++) {
+      fieldsets[i].removeAttribute('disabled');
+    }
+
+    addForm.classList.remove('ad-form--disabled');
+  };
+
+  if (map.classList.contains('map--faded')) {
+    map.classList.remove('map--faded');
   }
-  return fragment;
+
+  mapPins.appendChild(pinElements);
+
+  pinsRaplace();
+
+  undisabelForm();
 };
 
-var pinsRaplace = function (pins) {
-  for (var i = 0; i < pins.length - 1; i++) {
-    if (!pins[i].classList.contains('map__pin--main')) {
-      var pinHeight = window.getComputedStyle(pins[i]).height;
-      var pinWidth = window.getComputedStyle(pins[i]).width;
+var disableForm = function () {
+  var addForm = document.querySelector('.ad-form');
+  var fieldsets = document.querySelectorAll('fieldset');
 
-      pinWidth = pinWidth.replace('px', '') * 1;
-      pinHeight = pinHeight.replace('px', '') * 1;
+  for (var i = 0; i < fieldsets.length; i++) {
+    fieldsets[i].setAttribute('disabled', 'disabled');
+  }
 
-      pins[i].style.left = ads[i].location.x - (pinWidth / 2) + 'px';
-      pins[i].style.top = ads[i].location.y - pinHeight + 'px';
+  addForm.classList.add('ad-form--disabled');
+};
+
+var setAddressValue = function () {
+  var map = document.querySelector('.map');
+  var pinMain = document.querySelector('.map__pin--main');
+  var mainPinX = removePX(pinMain.style.top);
+  var mainPinY = removePX(pinMain.style.left);
+  var mainPinHeight = removePX(window.getComputedStyle(pinMain).height);
+  var mainPinWidth = removePX(window.getComputedStyle(pinMain).width);
+  var addressInput = document.querySelector('#address');
+
+  mainPinY = mainPinY - (mainPinWidth / 2);
+
+  if (map.classList.contains('map--faded')) {
+    mainPinX = mainPinX - (mainPinHeight / 2);
+  } else {
+    mainPinX = mainPinX + mainPinHeight;
+  }
+
+  addressInput.value = Math.floor(mainPinX) + ', ' + Math.floor(mainPinY);
+};
+
+disableForm();
+setAddressValue();
+
+var pinMain = document.querySelector('.map__pin--main');
+var map = document.querySelector('.map');
+
+pinMain.addEventListener('mousedown', function (evt) {
+  if (evt.button === 0) {
+    if (map.classList.contains('map--faded')) {
+      activeAll();
+      setAddressValue();
     }
   }
+});
+
+pinMain.addEventListener('keydown', function (evt) {
+  if (evt.key === 'Enter') {
+    if (map.classList.contains('map--faded')) {
+      activeAll();
+      setAddressValue();
+    }
+  }
+});
+
+/* --- валидация спальных мест --- */
+var validateRooms = function (roomNumberInput, capacityInput) {
+  switch (roomNumberInput.value) {
+    case '1':
+      if (capacityInput.value !== '1') {
+        roomNumberInput.setCustomValidity('Такое жилье доступно только для 1 гостя');
+      } else {
+        roomNumberInput.setCustomValidity('');
+      }
+      break;
+
+    case '2':
+      if (capacityInput.value !== '1' && capacityInput.value !== '2') {
+        roomNumberInput.setCustomValidity('Такое жилье доступно только для 1 либо 2x гостей');
+      } else {
+        roomNumberInput.setCustomValidity('');
+      }
+      break;
+
+    case '3':
+      if (capacityInput.value === '0') {
+        roomNumberInput.setCustomValidity('Такое жилье доступно только для гостей');
+      } else {
+        roomNumberInput.setCustomValidity('');
+      }
+      break;
+
+    case '100':
+      if (capacityInput.value !== '0') {
+        roomNumberInput.setCustomValidity('Такое жилье не доступно для гостей');
+      }
+      break;
+
+    default:
+      roomNumberInput.setCustomValidity('');
+  }
 };
 
-var map = document.querySelector('.map');
-if (map.classList.contains('map--taded')) {
-  map.classList.remove('map--faded');
-}
+var roomNumberInput = document.querySelector('#room_number');
+var capacityInput = document.querySelector('#capacity');
+validateRooms(roomNumberInput, capacityInput);
 
-var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
-var ads = getNearestAds(8);
-
-var pinElements = renderPins(ads);
-
-var mapPins = document.querySelector('.map__pins');
-mapPins.appendChild(pinElements);
-
-var pins = document.querySelectorAll('.map__pin');
-pinsRaplace(pins);
+roomNumberInput.addEventListener('change', function () {
+  validateRooms(roomNumberInput, capacityInput);
+});
+capacityInput.addEventListener('change', function () {
+  validateRooms(roomNumberInput, capacityInput);
+});
 
 /* --- Отрисовка карточки --- */
 
-var cardTemplate = document.querySelector('#card');
+/* var cardTemplate = document.querySelector('#card');
 var card = cardTemplate.cloneNode(true);
 
 card.content.querySelector('.popup__title').textContent = ads[0].offer.title;
@@ -170,10 +290,10 @@ switch (ads[0].offer.type) {
 
 card.content.querySelector('.popup__text--capacity').textContent = ads[0].offer.rooms + ' комнаты для ' + ads[0].offer.guests + ' гостей';
 card.content.querySelector('.popup__text--time').textContent = 'Заезд после ' + ads[0].offer.checkin + ', выезд до ' + ads[0].offer.checkout;
-
+ */
 /* --- отрисовки списка удобств --- */
 
-var popupFeaturesList = card.content.querySelector('.popup__features');
+/* var popupFeaturesList = card.content.querySelector('.popup__features');
 if (ads[0].offer.feature.length > 0) {
   while (popupFeaturesList.firstChild) {
     popupFeaturesList.removeChild(popupFeaturesList.firstChild);
@@ -244,3 +364,4 @@ if (ads[0].offer.photos[0]) {
 }
 var popupAvatar = document.querySelector('.popup__avatar');
 popupAvatar.src = ads[0].author.avatar;
+ */
