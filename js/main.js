@@ -394,24 +394,18 @@ var validateRooms = function (roomNumberInput, capacityInput) {
 var validatePrice = function (price, type) {
   switch (type) {
     case 'flat':
-      if (price.value * 1 < 1000) {
-        price.setCustomValidity('Минимальная стоимость квартир - 1000');
-      }
+      priceInput.setAttribute('min', 1000);
       break;
 
     case 'house':
-      if (price.value * 1 < 5000) {
-        price.setCustomValidity('Минимальная стоимость домов - 5000');
-      }
+      priceInput.setAttribute('min', 5000);
       break;
 
     case 'palace':
-      if (price.value * 1 < 10000) {
-        price.setCustomValidity('Минимальная стоимость домов - 10000');
-      }
+      priceInput.setAttribute('min', 10000);
       break;
 
-    default : price.setCustomValidity('');
+    default : priceInput.setAttribute('min', 0);
   }
 
   if (price.value * 1 > 1000000) {
