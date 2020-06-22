@@ -5,6 +5,22 @@
   var fieldsets = document.querySelectorAll('fieldset');
 
   window.form = {
+    activeAll: function () {
+      var map = document.querySelector('.map');
+      var mapPins = document.querySelector('.map__pins');
+      var pinElements = window.pin.render();
+
+      if (map.classList.contains('map--faded')) {
+        map.classList.remove('map--faded');
+      }
+
+      mapPins.appendChild(pinElements);
+
+      window.pin.replace();
+      window.pin.setEvent();
+      window.form.undisabel();
+    },
+
     undisabel: function () {
       for (var i = 0; i < fieldsets.length; i++) {
         fieldsets[i].removeAttribute('disabled');
