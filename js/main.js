@@ -3,17 +3,23 @@
 (function () {
   var activeAll = function () {
     var map = document.querySelector('.map');
-    var mapPins = document.querySelector('.map__pins');
-    var pinElements = window.pin.render();
+
+    var onLoad = function (data) {
+      var ads = data;
+      window.pin.render(ads);
+      window.pin.setEvent(ads);
+    };
+    var onError = function (err) {
+      var span = document.createElement(span);
+      span.textContent = err;
+      map.appendChild(span);
+    };
+
+    window.backend.load(onLoad, onError);
 
     if (map.classList.contains('map--faded')) {
       map.classList.remove('map--faded');
     }
-
-    mapPins.appendChild(pinElements);
-
-    window.pin.replace();
-    window.pin.setEvent();
     window.form.undisabel();
   };
 
