@@ -1,10 +1,10 @@
 'use strict';
 
 (function () {
-  var ads = window.getNearestAds(8);
 
   window.pin = {
-    render: function () {
+    render: function (ads) {
+      var mapPins = document.querySelector('.map__pins');
       var fragment = document.createDocumentFragment();
 
       for (var i = 0; i < ads.length; i++) {
@@ -16,10 +16,12 @@
         pin.dataset.id = i;
         fragment.appendChild(pin);
       }
-      return fragment;
+
+      mapPins.appendChild(fragment);
+      window.pin.replace(ads);
     },
 
-    replace: function () {
+    replace: function (ads) {
       var pinsRendered = document.querySelectorAll('.map__pin');
       for (var i = 0; i < pinsRendered.length - 1; i++) {
         if (!pinsRendered[i].classList.contains('map__pin--main')) {
@@ -97,13 +99,13 @@
       });
     },
 
-    setEvent: function () {
+    setEvent: function (ads) {
       var pins = document.querySelectorAll('.map__pin');
-
       var setPinClickEvent = function (element, id) {
         element.addEventListener('click', function (evt) {
           evt.preventDefault();
-          window.renderCard(id, ads);
+          window.card.remove();
+          window.card.render(id, ads);
         });
       };
 
