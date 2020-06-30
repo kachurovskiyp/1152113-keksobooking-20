@@ -1,6 +1,12 @@
 'use strict';
 
 (function () {
+  var WIFI = 'wifi';
+  var DISHWASHER = 'dishwasher';
+  var PARKING = 'parking';
+  var WASHER = 'washer';
+  var ELEVATOR = 'elevator';
+  var CONDITIONER = 'conditioner';
 
   window.card = {
     remove: function () {
@@ -9,6 +15,7 @@
         cardActive.remove();
       }
     },
+
     render: function (cardId, ads) {
       var cardTemplate = document.querySelector('#card');
       var card = cardTemplate.cloneNode(true);
@@ -54,27 +61,27 @@
           listItem.classList.add('popup__feature');
 
           switch (ads[cardId].offer.features[i]) {
-            case 'wifi':
+            case WIFI:
               listItem.classList.add('popup__feature--wifi');
               break;
 
-            case 'dishwasher':
+            case DISHWASHER:
               listItem.classList.add('popup__feature--dishwasher');
               break;
 
-            case 'parking':
+            case PARKING:
               listItem.classList.add('popup__feature--parking');
               break;
 
-            case 'washer':
+            case WASHER:
               listItem.classList.add('popup__feature--washer');
               break;
 
-            case 'elevator':
+            case ELEVATOR:
               listItem.classList.add('popup__feature--elevator');
               break;
 
-            case 'conditioner':
+            case CONDITIONER:
               listItem.classList.add('popup__feature--conditioner');
               break;
           }
@@ -100,11 +107,13 @@
 
         if (ads[cardId].offer.photos.length !== 1) {
           var photosFragment = document.createDocumentFragment();
-          for (var l = 0; l < ads[cardId].offer.photos.length; l++) {
+
+          ads[cardId].offer.photos.forEach(function (photoSrc) {
             var img = popupFotos.querySelector('img').cloneNode(true);
-            img.src = ads[cardId].offer.photos[l];
+            img.src = photoSrc;
             photosFragment.appendChild(img);
-          }
+          });
+
           popupFotos.appendChild(photosFragment);
         }
       } else {

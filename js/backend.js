@@ -2,6 +2,9 @@
 
 (function () {
   var URL = 'https://javascript.pages.academy/keksobooking/data';
+  var URL_SEND = 'https://javascript.pages.academy/keksobooking';
+  var LOAD_METHOD = 'GET';
+  var SEND_METHOD = 'POST';
   var StatusCode = {
     OK: 200
   };
@@ -27,8 +30,20 @@
       });
       xhr.timeout = TIMEOUT_IN_MS;
 
-      xhr.open('GET', URL);
+      xhr.open(LOAD_METHOD, URL);
       xhr.send();
+    },
+
+    send: function (data, onSuccess) {
+      var xhr = new XMLHttpRequest();
+      xhr.responseType = 'json';
+
+      xhr.addEventListener('load', function () {
+        onSuccess(xhr.status);
+      });
+
+      xhr.open(SEND_METHOD, URL_SEND);
+      xhr.send(data);
     }
   };
 })();
