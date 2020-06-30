@@ -20,7 +20,7 @@
     if (map.classList.contains('map--faded')) {
       map.classList.remove('map--faded');
     }
-    window.form.undisabel();
+    window.form.undisable();
   };
 
   window.form.disable();
