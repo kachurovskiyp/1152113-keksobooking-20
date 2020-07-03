@@ -5,9 +5,10 @@
     var map = document.querySelector('.map');
 
     var onLoad = function (data) {
-      var ads = data;
-      window.pin.render(ads);
-      window.pin.setEvent(ads);
+      window.ads = data;
+      window.pin.render(window.ads.slice(0, 5));
+      window.pin.setEvent(window.ads.slice(0, 5));
+      window.sortForm.undisable();
     };
     var onError = function (err) {
       var span = document.createElement(span);
@@ -21,6 +22,7 @@
       map.classList.remove('map--faded');
     }
     window.form.undisable();
+
   };
 
   window.form.disable();
@@ -55,17 +57,23 @@
 
     var onMouseMove = function (moveEvt) {
       moveEvt.preventDefault();
-      var MIN_X = -10;
-      var MAX_X = 1150;
-      var MIN_Y = 70;
-      var MAX_Y = 690;
+      var coord = {
+        x: {
+          min: -10,
+          max: 1150
+        },
+        y: {
+          min: 70,
+          max: 690
+        }
+      };
 
       var shift = {
         x: startCoords.x - moveEvt.clientX,
         y: startCoords.y - moveEvt.clientY
       };
-      if (pinMain.offsetTop - shift.y > MIN_Y && pinMain.offsetTop - shift.y < MAX_Y) {
-        if (pinMain.offsetLeft - shift.x > MIN_X && pinMain.offsetLeft - shift.x < MAX_X) {
+      if (pinMain.offsetTop - shift.y > coord.y.min && pinMain.offsetTop - shift.y < coord.y.max) {
+        if (pinMain.offsetLeft - shift.x > coord.x.min && pinMain.offsetLeft - shift.x < coord.x.max) {
           startCoords = {
             x: moveEvt.clientX,
             y: moveEvt.clientY

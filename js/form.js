@@ -1,6 +1,15 @@
 'use strict';
 
 (function () {
+  var pinClass = {
+    pin: '.map__pin',
+    pinMain: '.map__pin--main'
+  };
+  var mapClass = {
+    mapPins: '.map__pins',
+    mapFaded: '.map--faded'
+  };
+
   var addForm = document.querySelector('.ad-form');
   var map = document.querySelector('.map');
   var fieldsets = document.querySelectorAll('fieldset');
@@ -25,11 +34,11 @@
 
   window.form = {
     activeAll: function () {
-      var mapPins = document.querySelector('.map__pins');
+      var mapPins = document.querySelector(mapClass.mapPins);
       var pinElements = window.pin.render();
 
-      if (map.classList.contains('map--faded')) {
-        map.classList.remove('map--faded');
+      if (map.classList.contains(mapClass.mapFaded.slice(1))) {
+        map.classList.remove(mapClass.mapFaded.slice(1));
       }
 
       mapPins.appendChild(pinElements);
@@ -40,34 +49,30 @@
     },
 
     disableAll: function () {
-      var pins = document.querySelectorAll('.map__pin');
-      pins.forEach(function (pin) {
-        if (!pin.classList.contains('map__pin--main')) {
-          pin.remove();
-        }
-      });
-
-      if (!map.classList.contains('map--faded')) {
-        map.classList.add('map--faded');
+      if (!map.classList.contains(mapClass.mapFaded.slice(1))) {
+        map.classList.add(mapClass.mapFaded.slice(1));
       }
 
+      window.pin.remove();
+      window.sortForm.reset();
+      window.sortForm.disable();
       window.form.reset();
       window.form.disable();
     },
 
     undisable: function () {
-      for (var i = 0; i < fieldsets.length; i++) {
-        fieldsets[i].removeAttribute('disabled');
-      }
+      fieldsets.forEach(function (fieldsetItem) {
+        fieldsetItem.removeAttribute('disabled');
+      });
       addForm.classList.remove('ad-form--disabled');
       resetButton.addEventListener('click', resetButtonEvent);
       addForm.addEventListener('submit', submitEvent);
     },
 
     disable: function () {
-      for (var i = 0; i < fieldsets.length; i++) {
-        fieldsets[i].setAttribute('disabled', 'disabled');
-      }
+      fieldsets.forEach(function (fieldsetItem) {
+        fieldsetItem.setAttribute('disabled', 'disabled');
+      });
       addForm.classList.add('ad-form--disabled');
       resetButton.removeEventListener('click', resetButtonEvent);
       addForm.removeEventListener('submit', submitEvent);
@@ -78,42 +83,52 @@
     },
 
     setAddressValue: function () {
-      var pinMain = document.querySelector('.map__pin--main');
-      var mainPinX = window.removePX(pinMain.style.top);
-      var mainPinY = window.removePX(pinMain.style.left);
-      var mainPinHeight = window.removePX(window.getComputedStyle(pinMain).height);
-      var mainPinWidth = window.removePX(window.getComputedStyle(pinMain).width);
       var addressInput = document.querySelector('#address');
+      var pinMain = {
+        element: document.querySelector(pinClass.pinMain)
+      };
 
-      mainPinY = mainPinY - (mainPinWidth / 2);
+      pinMain = {
+        x: window.removePX(pinMain.element.style.top),
+        y: window.removePX(pinMain.element.style.left),
+        height: window.removePX(window.getComputedStyle(pinMain.element).height),
+        width: window.removePX(window.getComputedStyle(pinMain.element).width)
+      };
 
-      if (map.classList.contains('map--faded')) {
-        mainPinX = mainPinX - (mainPinHeight / 2);
+      pinMain.y = pinMain.y - (pinMain.width / 2);
+
+      if (map.classList.contains(mapClass.mapFaded.slice(1))) {
+        pinMain.x = pinMain.x - (pinMain.height / 2);
       } else {
-        mainPinX = mainPinX + mainPinHeight;
+        pinMain.x = pinMain.x + pinMain.height;
       }
 
-      addressInput.value = Math.floor(mainPinX) + ', ' + Math.floor(mainPinY);
+      addressInput.value = Math.floor(pinMain.x) + ', ' + Math.floor(pinMain.y);
     },
 
     validatePrice: function (price, type) {
+      var residencePrice = {
+        flat: 1000,
+        house: 5000,
+        palace: 10000,
+
+        getMinPrice: function (priceType) {
+          switch (priceType) {
+            case 'flat':
+              return this.flat;
+
+            case 'house':
+              return this.house;
+
+            case 'palace':
+              return this.palace;
+
+            default : return 0;
+          }
+        }
+      };
       var priceInput = document.querySelector('#price');
-
-      switch (type) {
-        case 'flat':
-          priceInput.setAttribute('min', 1000);
-          break;
-
-        case 'house':
-          priceInput.setAttribute('min', 5000);
-          break;
-
-        case 'palace':
-          priceInput.setAttribute('min', 10000);
-          break;
-
-        default : priceInput.setAttribute('min', 0);
-      }
+      priceInput.setAttribute('min', residencePrice.getMinPrice(type));
 
       if (price.value * 1 > 1000000) {
         priceInput.setCustomValidity('Цена слишком высока');
@@ -172,18 +187,18 @@
     },
 
     message: function (flag) {
-      var tamplate = '';
+      var template = '';
 
       switch (flag) {
         case 'success':
-          tamplate = document.querySelector('#success');
+          template = document.querySelector('#success');
           break;
         case 'error':
-          tamplate = document.querySelector('#error');
+          template = document.querySelector('#error');
           break;
       }
 
-      var message = tamplate.cloneNode(true);
+      var message = template.cloneNode(true);
       addForm.appendChild(message.content);
 
       var messageRemove = function () {

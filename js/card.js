@@ -1,12 +1,24 @@
 'use strict';
 
 (function () {
-  var WIFI = 'wifi';
-  var DISHWASHER = 'dishwasher';
-  var PARKING = 'parking';
-  var WASHER = 'washer';
-  var ELEVATOR = 'elevator';
-  var CONDITIONER = 'conditioner';
+  var FEATURE = {
+    NAME: {
+      WIFI: 'wifi',
+      DISHWASHER: 'dishwasher',
+      PARKING: 'parking',
+      WASHER: 'washer',
+      ELEVATOR: 'elevator',
+      CONDITIONER: 'conditioner'
+    },
+    CLASS: {
+      WIFI: 'popup__feature--wifi',
+      DISHWASHER: 'popup__feature--dishwasher',
+      PARKING: 'popup__feature--parking',
+      WASHER: 'popup__feature--washer',
+      ELEVATOR: 'popup__feature--elevator',
+      CONDITIONER: 'popup__feature--conditioner'
+    }
+  };
 
   window.card = {
     remove: function () {
@@ -61,28 +73,28 @@
           listItem.classList.add('popup__feature');
 
           switch (ads[cardId].offer.features[i]) {
-            case WIFI:
-              listItem.classList.add('popup__feature--wifi');
+            case FEATURE.NAME.WIFI:
+              listItem.classList.add(FEATURE.CLASS.WIFI);
               break;
 
-            case DISHWASHER:
-              listItem.classList.add('popup__feature--dishwasher');
+            case FEATURE.NAME.DISHWASHER:
+              listItem.classList.add(FEATURE.CLASS.DISHWASHER);
               break;
 
-            case PARKING:
-              listItem.classList.add('popup__feature--parking');
+            case FEATURE.NAME.PARKING:
+              listItem.classList.add(FEATURE.CLASS.PARKING);
               break;
 
-            case WASHER:
-              listItem.classList.add('popup__feature--washer');
+            case FEATURE.NAME.WASHER:
+              listItem.classList.add(FEATURE.CLASS.WASHER);
               break;
 
-            case ELEVATOR:
-              listItem.classList.add('popup__feature--elevator');
+            case FEATURE.NAME.ELEVATOR:
+              listItem.classList.add(FEATURE.CLASS.ELEVATOR);
               break;
 
-            case CONDITIONER:
-              listItem.classList.add('popup__feature--conditioner');
+            case FEATURE.NAME.CONDITIONER:
+              listItem.classList.add(FEATURE.CLASS.CONDITIONER);
               break;
           }
 
