@@ -2,8 +2,13 @@
 
 (function () {
 
+  var HOUSING_SORT = {
+    BY_TYPE: 'type'
+  };
+
   window.pin = {
     render: function (ads) {
+      window.pin.remove();
       var mapPins = document.querySelector('.map__pins');
       var fragment = document.createDocumentFragment();
 
@@ -19,6 +24,7 @@
 
       mapPins.appendChild(fragment);
       window.pin.replace(ads);
+      window.pin.setEvent(ads);
     },
 
     replace: function (ads) {
@@ -32,6 +38,21 @@
           pinsRendered[i].style.top = ads[i].location.y - pinHeight + 'px';
         }
       }
+    },
+
+    sort: function (sortBy, value) {
+      var sortedAds = [];
+      switch (sortBy) {
+        case HOUSING_SORT.BY_TYPE:
+          if (value !== 'any') {
+            sortedAds = window.ads.filter(function (item) {
+              return item.offer.type === value;
+            });
+          } else {
+            return window.ads.slice(5);
+          }
+      }
+      return sortedAds;
     },
 
     setMainEvent: function () {
@@ -124,6 +145,15 @@
           setPinEscEvent(pins[i]);
         }
       }
+    },
+
+    remove: function () {
+      var pins = document.querySelectorAll('.map__pin');
+      pins.forEach(function (pin) {
+        if (!pin.classList.contains('map__pin--main')) {
+          pin.remove();
+        }
+      });
     }
   };
 })();
