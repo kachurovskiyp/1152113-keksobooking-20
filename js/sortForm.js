@@ -1,22 +1,27 @@
 'use strict';
 
 (function () {
-  var housingInput = {
-    type: document.querySelector('#housing-type'),
-    price: document.querySelector('#housing-price'),
-    rooms: document.querySelector('#housing-rooms'),
-    guests: document.querySelector('#housing-guests'),
-    features: document.querySelector('#housing-features')
-  };
-
   var sortForm = document.querySelector('.map__filters');
   var selects = sortForm.querySelectorAll('select');
   var fieldsets = sortForm.querySelectorAll('fieldset');
 
-  var setTypeSort = function () {
-    window.card.remove();
-    window.pin.render(window.pin.sort('type', housingInput.type.value));
+  var HousingInput = {
+    Type: document.querySelector('#housing-type'),
+    Price: document.querySelector('#housing-price'),
+    Rooms: document.querySelector('#housing-rooms'),
+    Guests: document.querySelector('#housing-guests'),
+    Wifi: document.querySelector('#filter-wifi'),
+    Dishwasher: document.querySelector('#filter-dishwasher'),
+    Parking: document.querySelector('#filter-parking'),
+    Washer: document.querySelector('#filter-washer'),
+    Elevator: document.querySelector('#filter-elevator'),
+    Conditioner: document.querySelector('#filter-conditioner')
   };
+
+  var SetSort = window.debounce(function () {
+    window.card.remove();
+    window.pin.render(window.pin.sort());
+  });
 
   window.sortForm = {
     undisable: function () {
@@ -28,7 +33,9 @@
         fieldsetItem.removeAttribute('disabled');
       });
 
-      housingInput.type.addEventListener('change', setTypeSort);
+      Object.keys(HousingInput).forEach(function (item) {
+        HousingInput[item].addEventListener('change', SetSort);
+      });
     },
 
     disable: function () {
@@ -40,7 +47,9 @@
         fieldsetItem.setAttribute('disabled', 'disabled');
       });
 
-      housingInput.type.removeEventListener('change', setTypeSort);
+      Object.keys(HousingInput).forEach(function (item) {
+        HousingInput[item].removeEventListener('change', SetSort);
+      });
     },
 
     reset: function () {

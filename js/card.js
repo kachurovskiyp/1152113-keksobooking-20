@@ -1,22 +1,22 @@
 'use strict';
 
 (function () {
-  var FEATURE = {
-    NAME: {
-      WIFI: 'wifi',
-      DISHWASHER: 'dishwasher',
-      PARKING: 'parking',
-      WASHER: 'washer',
-      ELEVATOR: 'elevator',
-      CONDITIONER: 'conditioner'
+  var Feature = {
+    Name: {
+      Wifi: 'wifi',
+      Dishwasher: 'dishwasher',
+      Parking: 'parking',
+      Washer: 'washer',
+      Elevator: 'elevator',
+      Conditioner: 'conditioner'
     },
-    CLASS: {
-      WIFI: 'popup__feature--wifi',
-      DISHWASHER: 'popup__feature--dishwasher',
-      PARKING: 'popup__feature--parking',
-      WASHER: 'popup__feature--washer',
-      ELEVATOR: 'popup__feature--elevator',
-      CONDITIONER: 'popup__feature--conditioner'
+    Class: {
+      Wifi: 'popup__feature--wifi',
+      Dishwasher: 'popup__feature--dishwasher',
+      Parking: 'popup__feature--parking',
+      Washer: 'popup__feature--washer',
+      Elevator: 'popup__feature--elevator',
+      Conditioner: 'popup__feature--conditioner'
     }
   };
 
@@ -37,20 +37,20 @@
       card.content.querySelector('.popup__text--price').textContent = ads[cardId].offer.price + '₽/ночь';
 
       switch (ads[cardId].offer.type) {
-        case 'flat':
-          card.content.querySelector('.popup__type').textContent = 'Квартира';
+        case window.HouseType.Value.flat:
+          card.content.querySelector('.popup__type').textContent = window.HouseType.Name.flat;
           break;
 
-        case 'bungalo':
-          card.content.querySelector('.popup__type').textContent = 'Бунгало';
+        case window.HouseType.Value.bungalo:
+          card.content.querySelector('.popup__type').textContent = window.HouseType.Name.bungalo;
           break;
 
-        case 'house':
-          card.content.querySelector('.popup__type').textContent = 'Дом';
+        case window.HouseType.Value.house:
+          card.content.querySelector('.popup__type').textContent = window.HouseType.Name.house;
           break;
 
-        case 'palace':
-          card.content.querySelector('.popup__type').textContent = 'Дворец';
+        case window.HouseType.Value.palace:
+          card.content.querySelector('.popup__type').textContent = window.HouseType.Name.palace;
           break;
       }
 
@@ -73,28 +73,28 @@
           listItem.classList.add('popup__feature');
 
           switch (ads[cardId].offer.features[i]) {
-            case FEATURE.NAME.WIFI:
-              listItem.classList.add(FEATURE.CLASS.WIFI);
+            case Feature.Name.Wifi:
+              listItem.classList.add(Feature.Class.Wifi);
               break;
 
-            case FEATURE.NAME.DISHWASHER:
-              listItem.classList.add(FEATURE.CLASS.DISHWASHER);
+            case Feature.Name.Dishwasher:
+              listItem.classList.add(Feature.Class.Dishwasher);
               break;
 
-            case FEATURE.NAME.PARKING:
-              listItem.classList.add(FEATURE.CLASS.PARKING);
+            case Feature.Name.Parking:
+              listItem.classList.add(Feature.Class.Parking);
               break;
 
-            case FEATURE.NAME.WASHER:
-              listItem.classList.add(FEATURE.CLASS.WASHER);
+            case Feature.Name.Washer:
+              listItem.classList.add(Feature.Class.Washer);
               break;
 
-            case FEATURE.NAME.ELEVATOR:
-              listItem.classList.add(FEATURE.CLASS.ELEVATOR);
+            case Feature.Name.Elevator:
+              listItem.classList.add(Feature.Class.Elevator);
               break;
 
-            case FEATURE.NAME.CONDITIONER:
-              listItem.classList.add(FEATURE.CLASS.CONDITIONER);
+            case Feature.Name.Conditioner:
+              listItem.classList.add(Feature.Class.Conditioner);
               break;
           }
 
@@ -114,20 +114,21 @@
       map.insertBefore(card, document.querySelector('.map__filters-container'));
 
       var popupFotos = document.querySelector('.popup__photos');
-      if (ads[cardId].offer.photos[0]) {
+
+      if (ads[cardId].offer.photos.length > 1) {
+        var photosFragment = document.createDocumentFragment();
+        var img = popupFotos.querySelector('img');
+        ads[cardId].offer.photos.forEach(function (photoSrc) {
+          var newImg = img.cloneNode(true);
+          newImg.src = photoSrc;
+          photosFragment.appendChild(newImg);
+        });
+        popupFotos.removeChild(img);
+        popupFotos.appendChild(photosFragment);
+
+      } else if (ads[cardId].offer.photos.length === 1) {
         popupFotos.querySelector('img').src = ads[cardId].offer.photos[0];
 
-        if (ads[cardId].offer.photos.length !== 1) {
-          var photosFragment = document.createDocumentFragment();
-
-          ads[cardId].offer.photos.forEach(function (photoSrc) {
-            var img = popupFotos.querySelector('img').cloneNode(true);
-            img.src = photoSrc;
-            photosFragment.appendChild(img);
-          });
-
-          popupFotos.appendChild(photosFragment);
-        }
       } else {
         popupFotos.remove();
       }

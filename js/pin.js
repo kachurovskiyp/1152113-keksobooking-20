@@ -2,15 +2,17 @@
 
 (function () {
 
-  var HOUSING_SORT = {
-    BY_TYPE: 'type'
-  };
-
   window.pin = {
     render: function (ads) {
       window.pin.remove();
       var mapPins = document.querySelector('.map__pins');
       var fragment = document.createDocumentFragment();
+
+      ads = ads.filter(function (item) {
+        return !!item.offer;
+      });
+
+      ads = ads.slice(ads, 5);
 
       for (var i = 0; i < ads.length; i++) {
         var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
@@ -40,18 +42,113 @@
       }
     },
 
-    sort: function (sortBy, value) {
-      var sortedAds = [];
-      switch (sortBy) {
-        case HOUSING_SORT.BY_TYPE:
-          if (value !== 'any') {
-            sortedAds = window.ads.filter(function (item) {
-              return item.offer.type === value;
-            });
-          } else {
-            return window.ads.slice(5);
+    sort: function () {
+      var sortedAds = window.ads;
+
+      var sortForm = document.querySelector('.map__filters');
+      var formSelects = sortForm.querySelectorAll('select');
+
+      var Feature = {
+        Wifi: 'wifi',
+        Dishwasher: 'dishwasher',
+        Parking: 'parking',
+        Washer: 'washer',
+        Elevator: 'elevator',
+        Conditioner: 'conditioner',
+        Input: {
+          Wifi: document.querySelector('#filter-wifi'),
+          Dishwasher: document.querySelector('#filter-dishwasher'),
+          Parking: document.querySelector('#filter-parking'),
+          Washer: document.querySelector('#filter-washer'),
+          Elevator: document.querySelector('#filter-elevator'),
+          Conditioner: document.querySelector('#filter-conditioner')
+        }
+      };
+
+      var PriceValue = {
+        Name: {
+          Low: 'low',
+          Middle: 'middle',
+          High: 'high'
+        },
+        middle: {
+          min: 10000,
+          max: 50000
+        },
+        low: 10000,
+        high: 50000
+      };
+
+      var FilterParam = {
+        TypeId: 'housing-type',
+        PriceId: 'housing-price',
+        RoomsId: 'housing-rooms',
+        GuestsId: 'housing-guests',
+        SortBy: {}
+      };
+
+      formSelects.forEach(function (item) {
+        if (item.id === FilterParam.TypeId && item.value !== window.HouseType.Value.any) {
+          FilterParam.SortBy[FilterParam.TypeId] = item.value;
+        }
+        if (item.id === FilterParam.PriceId && item.value !== window.HouseType.Value.any) {
+          FilterParam.SortBy[FilterParam.PriceId] = item.value;
+        }
+        if (item.id === FilterParam.RoomsId && item.value !== window.HouseType.Value.any) {
+          FilterParam.SortBy[FilterParam.RoomsId] = item.value;
+        }
+        if (item.id === FilterParam.GuestsId && item.value !== window.HouseType.Value.any) {
+          FilterParam.SortBy[FilterParam.GuestsId] = item.value;
+        }
+        if (Feature.Input.Wifi.checked) {
+          FilterParam.SortBy[Feature.Wifi] = true;
+        }
+        if (Feature.Input.Dishwasher.checked) {
+          FilterParam.SortBy[Feature.Dishwasher] = true;
+        }
+        if (Feature.Input.Parking.checked) {
+          FilterParam.SortBy[Feature.Parking] = true;
+        }
+        if (Feature.Input.Washer.checked) {
+          FilterParam.SortBy[Feature.Washer] = true;
+        }
+        if (Feature.Input.Elevator.checked) {
+          FilterParam.SortBy[Feature.Elevator] = true;
+        }
+        if (Feature.Input.Conditioner.checked) {
+          FilterParam.SortBy[Feature.Conditioner] = true;
+        }
+      });
+
+      Object.keys(FilterParam.SortBy).forEach(function (sortParam) {
+        sortedAds = sortedAds.filter(function (item) {
+
+          if (sortParam === FilterParam.PriceId) {
+            switch (FilterParam.SortBy[sortParam]) {
+              case PriceValue.Name.Low:
+                return item.offer.price < PriceValue.low;
+              case PriceValue.Name.Middle:
+                return item.offer.price >= PriceValue.middle.min && item.offer.price <= PriceValue.middle.max;
+              case PriceValue.Name.High:
+                return item.offer.price > PriceValue.high;
+            }
           }
-      }
+
+          if (typeof FilterParam.SortBy[sortParam] === 'boolean') {
+            return item.offer.features.indexOf(sortParam) !== -1;
+          }
+
+          switch (sortParam) {
+            case FilterParam.TypeId:
+              return item.offer.type === FilterParam.SortBy[sortParam];
+            case FilterParam.RoomsId:
+              return item.offer.rooms === +FilterParam.SortBy[sortParam];
+            case FilterParam.GuestsId:
+              return item.offer.guests === +FilterParam.SortBy[sortParam];
+          }
+          return false;
+        });
+      });
       return sortedAds;
     },
 
@@ -85,17 +182,23 @@
 
         var onMouseMove = function (moveEvt) {
           moveEvt.preventDefault();
-          var MIN_X = -10;
-          var MAX_X = 1150;
-          var MIN_Y = 70;
-          var MAX_Y = 690;
+          var Coords = {
+            x: {
+              min: -10,
+              max: 1150
+            },
+            y: {
+              min: 70,
+              max: 690
+            }
+          };
 
           var shift = {
             x: startCoords.x - moveEvt.clientX,
             y: startCoords.y - moveEvt.clientY
           };
-          if (pinMain.offsetTop - shift.y > MIN_Y && pinMain.offsetTop - shift.y < MAX_Y) {
-            if (pinMain.offsetLeft - shift.x > MIN_X && pinMain.offsetLeft - shift.x < MAX_X) {
+          if (pinMain.offsetTop - shift.y > Coords.y.min && pinMain.offsetTop - shift.y < Coords.y.max) {
+            if (pinMain.offsetLeft - shift.x > Coords.x.min && pinMain.offsetLeft - shift.x < Coords.x.max) {
               startCoords = {
                 x: moveEvt.clientX,
                 y: moveEvt.clientY

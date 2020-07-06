@@ -10,6 +10,10 @@
     mapFaded: '.map--faded'
   };
 
+  var StatusCode = {
+    Ok: 200
+  };
+
   var addForm = document.querySelector('.ad-form');
   var map = document.querySelector('.map');
   var fieldsets = document.querySelectorAll('fieldset');
@@ -23,7 +27,7 @@
   var submitEvent = function (evt) {
     evt.preventDefault();
     window.backend.send(new FormData(addForm), function (status) {
-      if (status === 200) {
+      if (status === StatusCode.Ok) {
         window.form.disableAll();
         window.form.message('success');
       } else {
@@ -107,30 +111,32 @@
     },
 
     validatePrice: function (price, type) {
-      var residencePrice = {
-        flat: 1000,
-        house: 5000,
-        palace: 10000,
+      var ResidencePrice = {
+        Flat: 1000,
+        House: 5000,
+        Palace: 10000,
+        MaxPrice: 1000000,
+
 
         getMinPrice: function (priceType) {
           switch (priceType) {
-            case 'flat':
-              return this.flat;
+            case window.HouseType.Value.flat:
+              return this.Flat;
 
-            case 'house':
-              return this.house;
+            case window.HouseType.Value.house:
+              return this.House;
 
-            case 'palace':
-              return this.palace;
+            case window.HouseType.Value.palace:
+              return this.Palace;
 
             default : return 0;
           }
         }
       };
       var priceInput = document.querySelector('#price');
-      priceInput.setAttribute('min', residencePrice.getMinPrice(type));
+      priceInput.setAttribute('min', ResidencePrice.getMinPrice(type));
 
-      if (price.value * 1 > 1000000) {
+      if (+price.value > ResidencePrice.MaxPrice) {
         priceInput.setCustomValidity('Цена слишком высока');
       } else {
         price.setCustomValidity('');
@@ -138,33 +144,46 @@
     },
 
     validateRooms: function (roomNumberInput, capacityInput) {
+      var RoomValue = {
+        One: '1',
+        Two: '2',
+        Three: '3',
+        Hundred: '100'
+      };
+
+      var CapacityValue = {
+        One: '1',
+        Two: '2',
+        Zero: '0'
+      };
+
       switch (roomNumberInput.value) {
-        case '1':
-          if (capacityInput.value !== '1') {
+        case RoomValue.One:
+          if (capacityInput.value !== CapacityValue.One) {
             roomNumberInput.setCustomValidity('Такое жилье доступно только для 1 гостя');
           } else {
             roomNumberInput.setCustomValidity('');
           }
           break;
 
-        case '2':
-          if (capacityInput.value !== '1' && capacityInput.value !== '2') {
+        case RoomValue.Two:
+          if (capacityInput.value !== CapacityValue.One && capacityInput.value !== CapacityValue.Two) {
             roomNumberInput.setCustomValidity('Такое жилье доступно только для 1 либо 2x гостей');
           } else {
             roomNumberInput.setCustomValidity('');
           }
           break;
 
-        case '3':
-          if (capacityInput.value === '0') {
+        case RoomValue.Three:
+          if (capacityInput.value === CapacityValue.Zero) {
             roomNumberInput.setCustomValidity('Такое жилье доступно только для гостей');
           } else {
             roomNumberInput.setCustomValidity('');
           }
           break;
 
-        case '100':
-          if (capacityInput.value !== '0') {
+        case RoomValue.Hundred:
+          if (capacityInput.value !== CapacityValue.Zero) {
             roomNumberInput.setCustomValidity('Такое жилье не доступно для гостей');
           }
           break;
@@ -189,12 +208,27 @@
     message: function (flag) {
       var template = '';
 
+      var Message = {
+        Flag: {
+          Succes: 'success',
+          Error: 'error'
+        },
+        TemplateId: {
+          Succes: '#success',
+          Error: '#error'
+        },
+        Class: {
+          Succes: '.success',
+          Error: '.error'
+        }
+      };
+
       switch (flag) {
-        case 'success':
-          template = document.querySelector('#success');
+        case Message.Flag.Succes:
+          template = document.querySelector(Message.TemplateId.Succes);
           break;
-        case 'error':
-          template = document.querySelector('#error');
+        case Message.Flag.Error:
+          template = document.querySelector(Message.TemplateId.Error);
           break;
       }
 
@@ -216,11 +250,11 @@
       };
 
       switch (flag) {
-        case 'success':
-          message = document.querySelector('.success');
+        case Message.Flag.Succes:
+          message = document.querySelector(Message.Class.Succes);
           break;
-        case 'error':
-          message = document.querySelector('.error');
+        case Message.Flag.Error:
+          message = document.querySelector(Message.Class.Error);
           break;
       }
 

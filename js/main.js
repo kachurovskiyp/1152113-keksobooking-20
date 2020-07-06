@@ -26,6 +26,7 @@
   };
 
   window.form.disable();
+  window.sortForm.disable();
   window.form.setAddressValue();
 
   var pinMain = document.querySelector('.map__pin--main');
