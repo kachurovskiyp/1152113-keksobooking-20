@@ -3,6 +3,10 @@
 (function () {
   var activeAll = function () {
     var map = document.querySelector('.map');
+    var fileAvatar = document.querySelector('.ad-form__field input[type="file"]');
+    var previewAvatar = document.querySelector('.ad-form-header__preview img');
+    var fileFoto = document.querySelector('.ad-form__upload input[type="file"]');
+    var placeFoto = document.querySelector('.ad-form__photo');
 
     var onLoad = function (data) {
       window.ads = data;
@@ -22,7 +26,8 @@
       map.classList.remove('map--faded');
     }
     window.form.undisable();
-
+    window.readImage(fileAvatar, previewAvatar);
+    window.readImage(fileFoto, false, placeFoto);
   };
 
   window.form.disable();
