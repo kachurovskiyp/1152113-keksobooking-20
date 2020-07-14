@@ -58,6 +58,7 @@
       }
 
       window.pin.remove();
+      window.pin.replaceMain();
       window.sortForm.reset();
       window.sortForm.disable();
       window.form.reset();
@@ -83,7 +84,15 @@
     },
 
     reset: function () {
+      var avatarPreview = document.querySelector('.ad-form-header__preview img');
+      var fotoPreview = document.querySelector('.ad-form__photo');
+      var foto = fotoPreview.querySelector('img');
+
       addForm.reset();
+      avatarPreview.src = 'img/muffin-grey.svg';
+      if (foto) {
+        fotoPreview.removeChild(foto);
+      }
     },
 
     setAddressValue: function () {
@@ -135,6 +144,7 @@
       };
       var priceInput = document.querySelector('#price');
       priceInput.setAttribute('min', ResidencePrice.getMinPrice(type));
+      priceInput.placeholder = ResidencePrice.getMinPrice(type);
 
       if (+price.value > ResidencePrice.MaxPrice) {
         priceInput.setCustomValidity('Цена слишком высока');
