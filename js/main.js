@@ -8,19 +8,7 @@
     var fileFoto = document.querySelector('.ad-form__upload input[type="file"]');
     var placeFoto = document.querySelector('.ad-form__photo');
 
-    var onLoad = function (data) {
-      window.ads = data;
-      window.pin.render(window.ads.slice(0, 5));
-      window.pin.setEvent(window.ads.slice(0, 5));
-      window.sortForm.undisable();
-    };
-    var onError = function (err) {
-      var span = document.createElement(span);
-      span.textContent = err;
-      map.appendChild(span);
-    };
-
-    window.backend.load(onLoad, onError);
+    window.backend('load');
 
     if (map.classList.contains('map--faded')) {
       map.classList.remove('map--faded');

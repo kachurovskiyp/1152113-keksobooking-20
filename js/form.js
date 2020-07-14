@@ -1,6 +1,20 @@
 'use strict';
 
 (function () {
+  var Message = {
+    Flag: {
+      Succes: 'success',
+      Error: 'error'
+    },
+    TemplateId: {
+      Succes: '#success',
+      Error: '#error'
+    },
+    Class: {
+      Succes: '.success',
+      Error: '.error'
+    }
+  };
   var pinClass = {
     pin: '.map__pin',
     pinMain: '.map__pin--main'
@@ -9,9 +23,37 @@
     mapPins: '.map__pins',
     mapFaded: '.map--faded'
   };
+  var RoomValue = {
+    One: '1',
+    Two: '2',
+    Three: '3',
+    Hundred: '100'
+  };
+  var CapacityValue = {
+    One: '1',
+    Two: '2',
+    Zero: '0'
+  };
+  var ResidencePrice = {
+    Flat: 1000,
+    House: 5000,
+    Palace: 10000,
+    MaxPrice: 1000000,
 
-  var StatusCode = {
-    Ok: 200
+    getMinPrice: function (priceType) {
+      switch (priceType) {
+        case window.HouseType.Value.flat:
+          return this.Flat;
+
+        case window.HouseType.Value.house:
+          return this.House;
+
+        case window.HouseType.Value.palace:
+          return this.Palace;
+
+        default : return 0;
+      }
+    }
   };
 
   var addForm = document.querySelector('.ad-form');
@@ -26,8 +68,8 @@
 
   var submitEvent = function (evt) {
     evt.preventDefault();
-    window.backend.send(new FormData(addForm), function (status) {
-      if (status === StatusCode.Ok) {
+    window.backend(new FormData(addForm), function (status) {
+      if (status === window.StatusCode.OK) {
         window.form.disableAll();
         window.form.message('success');
       } else {
@@ -120,28 +162,6 @@
     },
 
     validatePrice: function (price, type) {
-      var ResidencePrice = {
-        Flat: 1000,
-        House: 5000,
-        Palace: 10000,
-        MaxPrice: 1000000,
-
-
-        getMinPrice: function (priceType) {
-          switch (priceType) {
-            case window.HouseType.Value.flat:
-              return this.Flat;
-
-            case window.HouseType.Value.house:
-              return this.House;
-
-            case window.HouseType.Value.palace:
-              return this.Palace;
-
-            default : return 0;
-          }
-        }
-      };
       var priceInput = document.querySelector('#price');
       priceInput.setAttribute('min', ResidencePrice.getMinPrice(type));
       priceInput.placeholder = ResidencePrice.getMinPrice(type);
@@ -154,19 +174,6 @@
     },
 
     validateRooms: function (roomNumberInput, capacityInput) {
-      var RoomValue = {
-        One: '1',
-        Two: '2',
-        Three: '3',
-        Hundred: '100'
-      };
-
-      var CapacityValue = {
-        One: '1',
-        Two: '2',
-        Zero: '0'
-      };
-
       switch (roomNumberInput.value) {
         case RoomValue.One:
           if (capacityInput.value !== CapacityValue.One) {
@@ -217,21 +224,6 @@
 
     message: function (flag) {
       var template = '';
-
-      var Message = {
-        Flag: {
-          Succes: 'success',
-          Error: 'error'
-        },
-        TemplateId: {
-          Succes: '#success',
-          Error: '#error'
-        },
-        Class: {
-          Succes: '.success',
-          Error: '.error'
-        }
-      };
 
       switch (flag) {
         case Message.Flag.Succes:
