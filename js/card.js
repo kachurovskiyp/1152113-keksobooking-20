@@ -110,7 +110,6 @@
 
       var map = document.querySelector('.map');
       card = card.content.querySelector('article');
-      map = document.querySelector('.map');
       map.insertBefore(card, document.querySelector('.map__filters-container'));
 
       var popupFotos = document.querySelector('.popup__photos');

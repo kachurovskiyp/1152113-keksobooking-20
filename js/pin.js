@@ -1,6 +1,12 @@
 'use strict';
 
 (function () {
+  var pinMain = document.querySelector('.map__pin--main');
+
+  var mainPinPosition = {
+    left: window.getComputedStyle(document.querySelector('.map__pin--main')).left,
+    top: window.getComputedStyle(document.querySelector('.map__pin--main')).top
+  };
 
   window.pin = {
     render: function (ads) {
@@ -27,6 +33,11 @@
       mapPins.appendChild(fragment);
       window.pin.replace(ads);
       window.pin.setEvent(ads);
+    },
+
+    replaceMain: function () {
+      pinMain.style.left = mainPinPosition.left;
+      pinMain.style.top = mainPinPosition.top;
     },
 
     replace: function (ads) {
@@ -153,7 +164,6 @@
     },
 
     setMainEvent: function () {
-      var pinMain = document.querySelector('.map__pin--main');
       var map = document.querySelector('.map');
 
       pinMain.addEventListener('keydown', function (evt) {
@@ -237,7 +247,9 @@
         element.addEventListener('keydown', function (evt) {
           if (evt.key === 'Escape') {
             var cardActive = document.querySelector('.map__card');
-            cardActive.remove();
+            if (cardActive) {
+              cardActive.remove();
+            }
           }
         });
       };
