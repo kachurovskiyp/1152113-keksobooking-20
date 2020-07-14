@@ -9,18 +9,33 @@
     load: 'GET',
     send: 'POST'
   };
-  var StatusCode = {
+
+  window.StatusCode = {
     OK: 200
   };
+
   var TIMEOUT_IN_MS = 10000;
 
-  window.backend = {
-    load: function (onLoad, onError) {
-      var xhr = new XMLHttpRequest();
-      xhr.responseType = 'json';
+  var onLoad = function (data) {
+    window.ads = data;
+    window.pin.render(window.ads.slice(0, 5));
+    window.pin.setEvent(window.ads.slice(0, 5));
+    window.sortForm.undisable();
+  };
+  var onError = function (err) {
+    var map = document.querySelector('.map');
+    var span = document.createElement(span);
+    span.textContent = err;
+    map.appendChild(span);
+  };
 
+  window.backend = function (data, onSuccess) {
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = 'json';
+
+    if (data === 'load') {
       xhr.addEventListener('load', function () {
-        if (xhr.status === StatusCode.OK) {
+        if (xhr.status === window.StatusCode.OK) {
           onLoad(xhr.response);
         } else {
           onError('Статус ответа: ' + xhr.status + ' ' + xhr.statusText);
@@ -36,12 +51,9 @@
 
       xhr.open(Method.load, Url.load);
       xhr.send();
-    },
+    }
 
-    send: function (data, onSuccess) {
-      var xhr = new XMLHttpRequest();
-      xhr.responseType = 'json';
-
+    if (data && onSuccess) {
       xhr.addEventListener('load', function () {
         onSuccess(xhr.status);
       });
