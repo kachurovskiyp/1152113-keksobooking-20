@@ -1,8 +1,10 @@
 'use strict';
 
 (function () {
+  var pinMain = document.querySelector('.map__pin--main');
+  var map = document.querySelector('.map');
+
   var activeAll = function () {
-    var map = document.querySelector('.map');
     var fileAvatar = document.querySelector('.ad-form__field input[type="file"]');
     var previewAvatar = document.querySelector('.ad-form-header__preview img');
     var fileFoto = document.querySelector('.ad-form__upload input[type="file"]');
@@ -22,35 +24,34 @@
   window.sortForm.disable();
   window.form.setAddressValue();
 
-  var pinMain = document.querySelector('.map__pin--main');
-  var map = document.querySelector('.map');
-
   pinMain.addEventListener('keydown', function (evt) {
     if (evt.key === 'Enter') {
       if (map.classList.contains('map--faded')) {
         activeAll();
         window.form.setAddressValue();
+        window.form.validatePrice(priceInput, typeInput.value);
       }
     }
   });
 
   pinMain.addEventListener('mousedown', function (evt) {
+    var startCoords = {
+      x: evt.clientX,
+      y: evt.clientY
+    };
+
     evt.preventDefault();
 
     if (evt.button === 0) {
       if (map.classList.contains('map--faded')) {
         activeAll();
         window.form.setAddressValue();
+        window.form.validatePrice(priceInput, typeInput.value);
       }
     }
 
-    var startCoords = {
-      x: evt.clientX,
-      y: evt.clientY
-    };
-
     var onMouseMove = function (moveEvt) {
-      moveEvt.preventDefault();
+
       var coord = {
         x: {
           min: -10,
@@ -66,6 +67,9 @@
         x: startCoords.x - moveEvt.clientX,
         y: startCoords.y - moveEvt.clientY
       };
+
+      moveEvt.preventDefault();
+
       if (pinMain.offsetTop - shift.y > coord.y.min && pinMain.offsetTop - shift.y < coord.y.max) {
         if (pinMain.offsetLeft - shift.x > coord.x.min && pinMain.offsetLeft - shift.x < coord.x.max) {
           startCoords = {

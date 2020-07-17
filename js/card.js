@@ -61,11 +61,11 @@
 
       var popupFeaturesList = card.content.querySelector('.popup__features');
       if (ads[cardId].offer.features.length > 0) {
+        var fragmentList = document.createDocumentFragment();
+
         while (popupFeaturesList.firstChild) {
           popupFeaturesList.removeChild(popupFeaturesList.firstChild);
         }
-
-        var fragmentList = document.createDocumentFragment();
 
         for (var i = 0; i < ads[cardId].offer.features.length; i++) {
           var listItem;
@@ -109,10 +109,9 @@
       card.content.querySelector('.popup__description').textContent = ads[cardId].offer.description;
 
       var map = document.querySelector('.map');
+      var popupFotos = document.querySelector('.popup__photos');
       card = card.content.querySelector('article');
       map.insertBefore(card, document.querySelector('.map__filters-container'));
-
-      var popupFotos = document.querySelector('.popup__photos');
 
       if (ads[cardId].offer.photos.length > 1) {
         var photosFragment = document.createDocumentFragment();

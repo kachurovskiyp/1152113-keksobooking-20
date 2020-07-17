@@ -1,6 +1,11 @@
 'use strict';
 
 (function () {
+  var addForm = document.querySelector('.ad-form');
+  var map = document.querySelector('.map');
+  var fieldsets = document.querySelectorAll('fieldset');
+  var resetButton = document.querySelector('.ad-form__reset');
+
   var Message = {
     Flag: {
       Succes: 'success',
@@ -15,25 +20,30 @@
       Error: '.error'
     }
   };
+
   var pinClass = {
     pin: '.map__pin',
     pinMain: '.map__pin--main'
   };
+
   var mapClass = {
     mapPins: '.map__pins',
     mapFaded: '.map--faded'
   };
+
   var RoomValue = {
     One: '1',
     Two: '2',
     Three: '3',
     Hundred: '100'
   };
+
   var CapacityValue = {
     One: '1',
     Two: '2',
     Zero: '0'
   };
+
   var ResidencePrice = {
     Flat: 1000,
     House: 5000,
@@ -55,11 +65,6 @@
       }
     }
   };
-
-  var addForm = document.querySelector('.ad-form');
-  var map = document.querySelector('.map');
-  var fieldsets = document.querySelectorAll('fieldset');
-  var resetButton = document.querySelector('.ad-form__reset');
 
   var resetButtonEvent = function (evt) {
     evt.preventDefault();
@@ -92,6 +97,7 @@
       window.pin.replace();
       window.pin.setEvent();
       window.form.undisable();
+      window.form.validatePrice();
     },
 
     disableAll: function () {
@@ -135,6 +141,7 @@
       if (foto) {
         fotoPreview.removeChild(foto);
       }
+      window.form.setAddressValue();
     },
 
     setAddressValue: function () {

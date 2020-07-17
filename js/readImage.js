@@ -5,7 +5,7 @@
     var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
     var previewAccess = preview;
 
-    fileChooser.addEventListener('change', function () {
+    var chooseFile = function () {
       var file = fileChooser.files[0];
       var fileName = file.name.toLowerCase();
       var matches = FILE_TYPES.some(function (item) {
@@ -14,6 +14,8 @@
 
       if (!previewAccess) {
         preview = document.createElement('img');
+        preview.style.width = '200px';
+        preview.style.hight = '267px';
         placeFoto.appendChild(preview);
       }
 
@@ -26,6 +28,9 @@
 
         reader.readAsDataURL(file);
       }
-    });
+      fileChooser.removeEventListener('change', chooseFile);
+    };
+
+    fileChooser.addEventListener('change', chooseFile);
   };
 })();
